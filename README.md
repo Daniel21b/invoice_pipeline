@@ -70,27 +70,19 @@ Streamlit Dashboard (analytics)
 
 **See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for detailed system design.**
 
-##  Project Status
 
-### Current Phase: **Phase 1 - Foundation** 
-- [x] Phase outline created (`invoice_pipeline_roadmap.md`)
-- [x] Core files prepared (CLAUDE.md, llms.txt, README.md)
-- [x] Project structure defined
-- [ ] `cdk init app --language python` completed
-- [ ] First S3 bucket deployed
-- [ ] Ready for Phase 2
 
-### Phase Timeline
+# How I divided the workflow
 | Phase | Focus | Status |
 |-------|-------|--------|
-| **1** | Foundation & project structure | 🔄 Current |
-| **2** | S3 ingestion + Lambda trigger | 📅 Next |
-| **3** | Textract OCR integration | Planned |
-| **4** | RDS PostgreSQL setup | Planned |
-| **5** | Streamlit web portal | Planned |
-| **6** | Analytics dashboards | Planned |
-| **7** | Account migration strategy | Planned |
-| **8** | Monitoring & observability | Planned |
+| **1** | Foundation & project structure |  complete |
+| **2** | S3 ingestion + Lambda trigger |  Complete |
+| **3** | Textract OCR integration | Complete |
+| **4** | RDS PostgreSQL setup | Complete |
+| **5** | Streamlit web portal | Complete |
+| **6** | Analytics dashboards | Complete |
+| **7** | Account migration strategy | Complete |
+| **8** | Monitoring & observability | Complete |
 
 **Full roadmap**: See [invoice_pipeline_roadmap.md](invoice_pipeline_roadmap.md)
 
@@ -200,7 +192,7 @@ python -m pytest tests/ -v
 - All logs go to CloudWatch
 - Never hardcode secrets (use environment variables)
 
-## 📞 Support & Troubleshooting
+##  Support & Troubleshooting
 
 See **[docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md)** for:
 - Common CDK errors & fixes
