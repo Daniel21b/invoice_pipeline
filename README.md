@@ -2,7 +2,7 @@
 
 Transform manual invoice data entry into a serverless cloud platform. Clients upload PDFs via secure portal → System automatically extracts data → Stores in database → Generates analytics dashboards.
 
-## 🎯 What This Does
+##  What This Does
 
 1. **Client uploads** PDF/image invoices via secure web portal (Streamlit)
 2. **System automatically extracts** invoice data (text, tables, amounts) using AWS Textract
@@ -45,7 +45,7 @@ aws s3 ls | grep invoice
 
 Done! Your first cloud resource is live.
 
-## 🏗️ Architecture
+##  Architecture
 
 ### High-Level Flow
 ```
@@ -70,9 +70,9 @@ Streamlit Dashboard (analytics)
 
 **See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for detailed system design.**
 
-## 📊 Project Status
+##  Project Status
 
-### Current Phase: **Phase 1 - Foundation** ✅
+### Current Phase: **Phase 1 - Foundation** 
 - [x] Phase outline created (`invoice_pipeline_roadmap.md`)
 - [x] Core files prepared (CLAUDE.md, llms.txt, README.md)
 - [x] Project structure defined
@@ -114,7 +114,7 @@ source .venv/bin/activate   # Activate (macOS/Linux)
 .venv\Scripts\activate      # Activate (Windows)
 ```
 
-## 📦 Tech Stack
+##  Tech Stack
 
 - **Language**: Python 3.11+
 - **Cloud**: AWS (Lambda, S3, RDS, Textract, IAM)
@@ -123,7 +123,7 @@ source .venv/bin/activate   # Activate (macOS/Linux)
 - **Database**: PostgreSQL 15
 - **Testing**: Pytest
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 invoice-pipeline/
@@ -157,16 +157,16 @@ invoice-pipeline/
         └── test_s3_lambda.py
 ```
 
-## 🔐 Key Features
+##  Key Features
 
-✅ **Serverless** - No servers to manage or monitor  
-✅ **Cost-Optimized** - Uses AWS free tier limits ($0-$5/month typical)  
-✅ **Scalable** - Handles 1-1000 invoices per month with same code  
-✅ **Portable** - CDK makes it easy to transfer to client AWS account  
-✅ **Secure** - S3 encryption, RDS no public access, presigned URLs  
-✅ **Automated** - No manual data entry or copy-paste required  
+ **Serverless** - No servers to manage or monitor  
+ **Cost-Optimized** - Uses AWS free tier limits ($0-$5/month typical)  
+ **Scalable** - Handles 1-1000 invoices per month with same code  
+ **Portable** - CDK makes it easy to transfer to client AWS account  
+ **Secure** - S3 encryption, RDS no public access, presigned URLs  
+ **Automated** - No manual data entry or copy-paste required  
 
-## ⚠️ Important Constraints
+##  Important Constraints
 
 **AWS Free Tier Limits**:
 - Lambda: 1M requests/month, 400K GB-seconds
@@ -179,48 +179,7 @@ invoice-pipeline/
 - Lambda timeout max 15 minutes (Textract polling needs <10min)
 - Presigned URLs expire in 15 minutes (generate fresh for each session)
 
-**See [docs/AWS_FREE_TIER.md](docs/AWS_FREE_TIER.md) for full constraints and workarounds.**
 
-## 📖 Documentation
-
-- **[CLAUDE.md](CLAUDE.md)** - AI agent context (auto-loaded in Claude)
-- **[llms.txt](llms.txt)** - LLM documentation index
-- **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** - System design & data flow
-- **[docs/SETUP.md](docs/SETUP.md)** - Local development setup
-- **[docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)** - CDK deployment guide
-- **[docs/AWS_FREE_TIER.md](docs/AWS_FREE_TIER.md)** - Constraints & workarounds
-- **[docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md)** - Common issues & fixes
-- **[invoice_pipeline_roadmap.md](invoice_pipeline_roadmap.md)** - Full 8-phase roadmap
-
-## 🚀 Next Steps
-
-### Today (Phase 1)
-1. Copy CLAUDE.md, llms.txt, README.md to project root
-2. Run `cdk init app --language python`
-3. Deploy first S3 bucket: `make deploy`
-4. Verify in AWS Console or CLI
-
-### This Week (Phase 2)
-1. Add Lambda function to `invoice_processor.py`
-2. Configure S3 event notification → Lambda trigger
-3. Test with sample PDF upload
-4. Verify Lambda logs in CloudWatch
-
-### Next Week (Phase 3+)
-1. Integrate AWS Textract
-2. Set up RDS PostgreSQL
-3. Build Streamlit portal
-4. Create analytics dashboards
-
-**See [invoice_pipeline_roadmap.md](invoice_pipeline_roadmap.md) for detailed 8-phase plan.**
-
-## 💡 For Development
-
-### Use AI Agents Effectively
-- **Add CLAUDE.md to context** - I auto-load it and understand all constraints
-- **Check llms.txt** - Fast navigation to relevant docs
-- **Read ARCHITECTURE.md** - Understand system before coding
-- **Reference phase outline** - Know what's being built and why
 
 ### Testing Locally
 ```bash
@@ -250,7 +209,7 @@ See **[docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md)** for:
 - S3 presigned URL issues
 - Textract job failures
 
-## 📄 License
+##  License
 
 Proprietary - Client project (2026)
 
