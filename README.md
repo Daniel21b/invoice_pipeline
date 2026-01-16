@@ -36,7 +36,7 @@
 ## 🎥 Demo
 
 <div align="center">
-  <a href="docs/demo.mp4">
+  <a href="https://github.com/user-attachments/assets/9b869613-a0ab-4605-9b82-60c0bbd7c887">
     <img src="docs/thumbnail.jpg" alt="Watch the Demo" width="100%">
   </a>
   <p><em>Click the thumbnail above to watch the full pipeline in action (0:45)</em></p>
