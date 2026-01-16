@@ -1,0 +1,7 @@
+# Lambda layer dependencies - Phase 3
+# boto3 is included in Lambda runtime (no need to package)
+# These are only needed if building a Lambda layer or for local development
+
+# PostgreSQL connector - Phase 3+
+# Use psycopg2-binary for local dev, psycopg2 (compiled) for Lambda layer
+# psycopg2-binary>=2.9.9

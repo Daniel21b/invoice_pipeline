@@ -1,0 +1,66 @@
+*.swp
+package-lock.json
+__pycache__
+.pytest_cache
+.venv
+*.egg-info
+
+# CDK asset staging directory
+.cdk.staging
+cdk.out
+
+# ============================================================
+# SECURITY - NEVER COMMIT THESE FILES
+# ============================================================
+
+# Streamlit secrets - contains admin credentials and DB passwords
+.streamlit/secrets.toml
+
+# Environment files
+.env
+.env.local
+.env.*.local
+.env.production
+.env.staging
+.env.development
+
+# AWS credentials and config
+*.pem
+*.key
+*.p12
+*.pfx
+credentials.json
+aws-credentials
+.aws/
+
+# Database credentials
+database.ini
+db.ini
+*.db-journal
+
+# SSH keys
+id_rsa
+id_rsa.pub
+id_ed25519
+id_ed25519.pub
+*.ppk
+
+# API keys and tokens
+api_keys.json
+tokens.json
+auth_tokens.json
+
+# Logs that might contain sensitive data
+*.log
+logs/
+
+# IDE settings that might contain paths
+.idea/
+.vscode/settings.json
+*.code-workspace
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
