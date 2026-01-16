@@ -12,6 +12,7 @@ openpyxl>=3.1.0  # Excel file support
 
 # Database
 psycopg2-binary>=2.9.9
+sqlalchemy>=2.0.25
 
 # Environment variables
 python-dotenv>=1.0.0
