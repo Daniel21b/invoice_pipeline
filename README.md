@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="docs/banner.png" alt="Invoice Pipeline Banner" width="100%" />
+  <img src="https://placehold.co/1200x350/232F3E/ffffff?text=Automated+Invoice+Processing+Pipeline" alt="Invoice Pipeline Banner" width="100%" />
 
   <h1>Automated Invoice Processing Pipeline</h1>
 
@@ -36,10 +36,9 @@
 ## 🎥 Demo
 
 <div align="center">
-  <a href="https://github.com/user-attachments/assets/9b869613-a0ab-4605-9b82-60c0bbd7c887">
-    <img src="docs/thumbnail.jpg" alt="Watch the Demo" width="100%">
-  </a>
-  <p><em>Click the thumbnail above to watch the full pipeline in action (0:45)</em></p>
+  <video src="https://github.com/user-attachments/assets/9b869613-a0ab-4605-9b82-60c0bbd7c887" controls="controls" muted="muted" style="max-width: 100%;">
+  </video>
+  <p><em>Watch the full Extract, Load, Analyze pipeline in action (0:45)</em></p>
 </div>
 
 ---
