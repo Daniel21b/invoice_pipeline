@@ -10,7 +10,7 @@ Transform manual invoice data entry into a serverless cloud platform. Clients up
 4. **Client views reports** in embedded analytics dashboard (invoices over time, top vendors, etc.)
 5. **Zero AWS Console access** - Client never sees AWS infrastructure (invisible cloud)
 
-## ⚡ Quick Start
+##  Quick Start
 
 ### Prerequisites
 - AWS Account (free tier eligible)
