@@ -207,4 +207,3 @@ Proprietary - Client project (2026)
 
 ---
 
-**Questions?** Check [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) or review **[CLAUDE.md](CLAUDE.md)** for project constraints.
