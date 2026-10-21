@@ -38,9 +38,9 @@ python -m pytest tests/unit/test_intelligence.py tests/unit/test_intelligence_ha
 cdk synth --app 'python intelligence_app.py'
 ```
 
-The new `InvoiceIntelligenceStack` is separate from the existing `app.py` legacy
-stack. Existing resources and local prescription work are not migrated or deleted.
-Do not deploy the legacy stack to provision this architecture.
+The default CDK entry point deploys `InvoiceIntelligenceStack`, separate from
+the existing `app.py` legacy stack. Existing resources and local prescription work are not migrated or deleted.
+Use `cdk --app "python app.py"` only when explicitly maintaining the legacy stack.
 
 1. Apply `database/migrations/001_intelligence.sql` to the existing invoice
    database. It adds an idempotency key without dropping tables. The legacy
