@@ -1,115 +1,93 @@
-<div align="center">
-  <img src="https://placehold.co/1200x350/232F3E/ffffff?text=Automated+Invoice+Processing+Pipeline" alt="Invoice Pipeline Banner" width="100%" />
+# Paper-to-Digital Invoice Intelligence Platform
 
-  <h1>Automated Invoice Processing Pipeline</h1>
+Python · PostgreSQL · Lambda · Step Functions · S3 · Textract · Amazon Bedrock · Streamlit · AWS CDK
 
-  <p>
-    <strong>Transform manual data entry into an invisible, serverless cloud platform.</strong>
-  </p>
+Project period recorded on the résumé: **July–September 2025**. The Step Functions,
+review gate and Bedrock implementation in this revision were added in **October 2026**.
+These dates distinguish the original project from subsequent implementation work.
 
-  <p>
-    <a href="https://www.python.org/">
-      <img src="https://img.shields.io/badge/Python-3.11+-3776AB?style=flat&logo=python&logoColor=white" alt="Python 3.11+">
-    </a>
-    <a href="https://aws.amazon.com/">
-      <img src="https://img.shields.io/badge/AWS-Serverless-232F3E?style=flat&logo=amazon-aws&logoColor=white" alt="AWS">
-    </a>
-    <a href="https://streamlit.io/">
-      <img src="https://img.shields.io/badge/Frontend-Streamlit-FF4B4B?style=flat&logo=streamlit&logoColor=white" alt="Streamlit">
-    </a>
-    <a href="https://github.com/aws/aws-cdk">
-      <img src="https://img.shields.io/badge/IaC-AWS%20CDK-8C4FFF?style=flat&logo=terraform&logoColor=white" alt="AWS CDK">
-    </a>
-    <img src="https://img.shields.io/badge/License-MIT-green?style=flat" alt="License">
-  </p>
+The intelligence workflow extracts invoice fields with Textract, asks Amazon
+Bedrock to suggest missing or low-confidence fields, and holds uncertain records
+in private S3 for Streamlit review **before inserting an invoice into PostgreSQL**.
+High-confidence valid records can be saved automatically. Model suggestions always
+require human review. The schema remains invoice number, vendor, date and amount.
 
-  <h4>
-    <a href="#-demo">View Demo</a> •
-    <a href="#-features">Features</a> •
-    <a href="#-quick-start">Quick Start</a> •
-    <a href="docs/ARCHITECTURE.md">Architecture</a>
-  </h4>
-</div>
+```mermaid
+flowchart TD
+    Upload[Streamlit PDF or image upload] --> S3[Private versioned S3]
+    S3 --> Starter[Starter Lambda]
+    Starter --> SF[Step Functions]
+    SF --> OCR[Lambda: Textract AnalyzeExpense]
+    OCR --> Missing{Missing or low-confidence fields?}
+    Missing -->|Yes| Bedrock[Lambda: Bedrock Converse suggestions]
+    Missing -->|No| Gate{All fields valid and high confidence?}
+    Bedrock --> Review[Private S3 pending review]
+    Gate -->|No| Review
+    Gate -->|Yes| DB[(PostgreSQL invoices)]
+    Review --> Human[Streamlit: original document and editable fields]
+    Human -->|Verified| DB
+```
 
-<br />
+## Run and deploy
 
-## 🎥 Demo
-
-<div align="center">
-  <video src="https://github.com/user-attachments/assets/9b869613-a0ab-4605-9b82-60c0bbd7c887" controls="controls" muted="muted" style="max-width: 100%;">
-  </video>
-  <p><em>Watch the full Extract, Load, Analyze pipeline in action (0:45)</em></p>
-</div>
-
----
-
-## 🚀 What This Does
-
-This project eliminates manual data entry by orchestrating a complete **Extract, Load, Analyze (ELA)** pipeline completely in the cloud.
-
-| Step | Action | Tech Used |
-| :--- | :--- | :--- |
-| **1. Upload** | Client uploads PDF/Image via secure portal | **Streamlit** |
-| **2. Extract** | System identifies text, tables, and amounts | **AWS Textract** |
-| **3. Store** | Structured data is saved relationally | **PostgreSQL (RDS)** |
-| **4. Visualize** | Client views costs, vendors, and timelines | **Dashboards** |
-| **5. Invisible** | Zero console access required for the client | **Presigned URLs** |
-
----
-
-## ✨ Key Features
-
-<div align="center">
-
-| ☁️ **Serverless** | 💰 **Cost-Optimized** | 🔒 **Secure** |
-| :--- | :--- | :--- |
-| No servers to manage. <br>Scales from 1 to 1k invoices. | Uses Free Tier limits. <br>Est. cost: $0-$5/month. | S3 Encryption, Private RDS, <br>Presigned URLs. |
-
-</div>
-
-<details>
-<summary><strong>View Technical Constraints & Limits</strong></summary>
-
-* **Lambda:** 1M requests/month (Free Tier)
-* **S3:** 5GB Storage (Free Tier)
-* **RDS:** t3.micro auto-stops after 7 days inactivity
-* **Textract:** ~$1.50 per 1000 pages (Not Free Tier)
-* **Timeouts:** Lambda max 15 mins (Textract polling)
-</details>
-
----
-
-## 🛠️ Tech Stack
-
-* **Core:** ![Python](https://img.shields.io/badge/Python-3.11-3776AB?logo=python&logoColor=white)
-* **Infrastructure:** ![AWS CDK](https://img.shields.io/badge/AWS_CDK-v2-orange)
-* **Compute:** AWS Lambda, Step Functions
-* **Storage:** S3 (Raw), RDS PostgreSQL 15 (Structured)
-* **AI/OCR:** AWS Textract
-* **Interface:** Streamlit (Python-only frontend)
-
----
-
-## ⚡ Quick Start
-
-### Prerequisites
-* AWS Account (Free tier eligible)
-* Python 3.11+ & Node.js (for CDK)
-* AWS CLI configured
-
-### Deploy in 5 Minutes
-
-```bash
-# 1. Clone & Init
-git clone [https://github.com/yourusername/invoice-pipeline.git](https://github.com/yourusername/invoice-pipeline.git)
-cd invoice-pipeline
-npm install -g aws-cdk
-
-# 2. Virtual Env Setup
+```sh
 python -m venv .venv
-source .venv/bin/activate  # Windows: .venv\Scripts\activate
-pip install -r requirements.txt
+source .venv/bin/activate
+pip install -r requirements.txt -r requirements-dev.txt
+python -m pytest tests/unit/test_intelligence.py tests/unit/test_intelligence_handlers.py -q
+cdk synth --app 'python intelligence_app.py'
+```
 
-# 3. Deploy Stack
-cdk bootstrap              # Prepare AWS environment (first time only)
-cdk deploy                 # Push infrastructure to cloud
+The default CDK entry point deploys `InvoiceIntelligenceStack`, separate from
+the existing `app.py` legacy stack. Existing resources and local prescription work are not migrated or deleted.
+Use `cdk --app "python app.py"` only when explicitly maintaining the legacy stack.
+
+1. Apply `database/migrations/001_intelligence.sql` to the existing invoice
+   database. It adds an idempotency key without dropping tables. The legacy
+   `database/schema.sql` is destructive and is only suitable for a new empty DB.
+2. Create a Secrets Manager secret with `host`, `port`, `username`, `password`,
+   `dbname`. The database must be reachable by Lambda and support TLS. Private
+   RDS requires adding VPC/subnet/security-group configuration before deployment;
+   this stack does not provision database networking.
+3. Select an enabled **in-region Converse-compatible** Bedrock model. Supply its
+   exact model ID and foundation-model ARN. Cross-region inference profiles need
+   additional destination-model permissions and are not configured by this stack.
+4. Review `cdk diff --app 'python intelligence_app.py'`, then deploy with
+   `DatabaseSecretArn`, `BedrockModelId`, and `BedrockModelArn` parameters.
+5. Configure the Streamlit AWS bucket to the new stack's `InvoiceBucket` output,
+   prefix `invoices/`, and its database credentials. Run
+   `streamlit run src/web_portal/app.py`. The portal's authenticated
+   **Extraction Review** page lists pending candidates and opens the original.
+   Its AWS identity needs list/read access to pending records, source-version read
+   access and delete permission for completed review markers, plus invoice upload.
+
+Only the persistence Lambda can read the database secret. Bedrock permission is
+scoped to the supplied model ARN. S3 is private, versioned and retained on deletion.
+Duplicate delivery uses deterministic Step Functions execution names; database
+inserts have a unique extraction ID. Reapproving a completed record is a no-op.
+
+## Implementation map
+
+- `intelligence_app.py`, `invoice_pipeline/intelligence_stack.py`: CDK entry and orchestration.
+- `src/lambda_functions/intelligence.py`: normalization, confidence gate, model merge, persistence.
+- `src/lambda_functions/intelligence_handlers.py`: S3 starter, OCR, fallback, review queue and persistence.
+- `src/web_portal/pages/03_Extraction_Review.py`: authenticated review before insert.
+- `database/migrations/001_intelligence.sql`: additive invoice migration.
+- `docs/VALIDATION.md`: verification and remaining deployment work.
+- `docs/LEGACY_INVOICE.md`: previous documentation; its direct S3 → Lambda path
+  is not the intelligence workflow. Historical scale/performance claims there
+  are not measurements of this implementation.
+
+## Boundaries
+
+The current OCR call is synchronous `AnalyzeExpense`: use supported images or a
+single-page PDF containing one invoice. Multi-page asynchronous Textract is not
+implemented. Non-ISO OCR dates are sent to manual review. Bedrock sees OCR text,
+so it cannot recover information missing from that transcript; reviewers can
+inspect the original document. Failed model calls route to review. OCR failures
+fail the execution for inspection/retry rather than creating an accepted row.
+
+No AWS deployment, live provider run, throughput, accuracy or cost result is
+claimed by the local tests. The inherited secrets-based Streamlit admin login
+remains demo authentication. Production operation needs a deployment-specific
+access, networking, observability and retention setup.
