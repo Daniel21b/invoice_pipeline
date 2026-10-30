@@ -3,7 +3,7 @@ Analytics Dashboard - Phase 8
 KPIs, charts, and business insights for invoice data.
 
 Available at: localhost:8501/Analytics (Streamlit auto-creates navigation)
-Requires authentication to access (admin only via Streamlit secrets).
+Requires authentication to access (Google OIDC plus approved reviewer mapping).
 """
 
 import os
@@ -20,12 +20,15 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirna
 
 from database.database import get_db_manager
 from database.auth import AuditLog
+from src.web_portal.authentication import require_reviewer, logout
 
 st.set_page_config(
     page_title="Analytics Dashboard",
     page_icon="chart_with_upwards_trend",
     layout="wide",
 )
+
+require_reviewer(st)
 
 # Database connection
 db = get_db_manager()
@@ -35,14 +38,8 @@ if db is None:
 
 session = db.get_session()
 
-# === AUTHENTICATION GATEKEEPER ===
-if not st.session_state.get("authenticated"):
-    st.warning("Access denied. Please log in to access analytics.")
-    st.switch_page("pages/login.py")
-    st.stop()
-
 # Get current user info from session state
-user_id = st.session_state.get("user_id", 1)
+user_id = st.session_state["user_id"]
 user_email = st.session_state.get("email", "")
 user_name = st.session_state.get("full_name", user_email)
 user_role = st.session_state.get("role", "admin")
@@ -57,13 +54,12 @@ with st.sidebar:
     if st.button("Logout", use_container_width=True, key="analytics_logout"):
         AuditLog.log_action(
             session,
-            user_id=user_id or 1,
+            user_id=user_id,
             action="logout",
             entity_type="user",
-            entity_id=user_id or 1
+            entity_id=user_id
         )
-        st.session_state.clear()
-        st.switch_page("pages/login.py")
+        logout(st)
 
 st.title("Invoice Analytics Dashboard")
 

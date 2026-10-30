@@ -9,12 +9,15 @@ import streamlit as st
 sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "lambda_functions"))
 from database.database import get_db_manager
+from src.web_portal.authentication import require_reviewer, logout
 from intelligence import FIELDS, persist
 
 st.set_page_config(page_title="Invoice extraction review", layout="wide")
-if not st.session_state.get("authenticated"):
-    st.switch_page("pages/login.py")
-    st.stop()
+require_reviewer(st)
+with st.sidebar:
+    st.caption(st.session_state['email'])
+    if st.button('Sign out'):
+        logout(st)
 st.title("Review invoice extractions")
 bucket = st.secrets["aws"]["s3_bucket"]
 s3 = boto3.client("s3", region_name=st.secrets["aws"].get("region", "us-east-1"))

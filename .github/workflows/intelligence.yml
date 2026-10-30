@@ -13,5 +13,5 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: pip install pytest boto3 psycopg2-binary aws-cdk-lib constructs
-      - run: python -m pytest tests/unit/test_intelligence*.py -q
+      - run: pip install pytest boto3 psycopg2-binary aws-cdk-lib constructs -r src/web_portal/requirements.txt
+      - run: python -m pytest tests/unit/test_intelligence*.py tests/unit/test_portal_auth.py tests/unit/test_portal_ui.py -q

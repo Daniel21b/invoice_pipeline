@@ -2,7 +2,7 @@
 Streamlit Unified Ingestion Portal - Phase 8
 
 Admin-only access to invoice data.
-Uses Streamlit Secrets for authentication (no database user management).
+Uses Google OIDC and an explicit reviewer-to-user mapping.
 Requires authentication for all access.
 """
 
@@ -22,6 +22,16 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspa
 
 from database.database import get_db_manager
 from database.auth import AuditLog
+from src.web_portal.authentication import require_reviewer, logout
+
+# === PAGE CONFIG ===
+st.set_page_config(
+    page_title="Business Data Portal",
+    page_icon="receipt",
+    layout="wide",
+)
+
+require_reviewer(st)
 
 # === CONFIGURATION ===
 REQUIRED_COLUMNS = ["Date", "Vendor", "Amount", "Category"]
@@ -45,13 +55,6 @@ except Exception:
     pass
 
 
-# === PAGE CONFIG ===
-st.set_page_config(
-    page_title="Business Data Portal",
-    page_icon="receipt",
-    layout="wide",
-)
-
 # === DATABASE CONNECTION ===
 db = get_db_manager()
 if db is None:
@@ -67,18 +70,11 @@ if db is None:
 # Get database session
 session = db.get_session()
 
-# === AUTHENTICATION GATEKEEPER ===
-# This MUST be at the top - stops execution if not authenticated
-if not st.session_state.get("authenticated"):
-    st.warning("Access denied. Please log in to access the portal.")
-    st.switch_page("pages/login.py")
-    st.stop()  # Extra safety to ensure nothing below runs
-
 # Get current user info from session state
-user_id = st.session_state.get("user_id", 1)
+user_id = st.session_state["user_id"]
 user_email = st.session_state.get("email", "")
 user_name = st.session_state.get("full_name", user_email)
-user_role = st.session_state.get("role", "admin")  # Default to admin for secrets-based auth
+user_role = st.session_state.get("role", "admin")  # Approved reviewers retain the existing admin permissions
 
 # === SIDEBAR WITH USER INFO ===
 with st.sidebar:
@@ -91,14 +87,13 @@ with st.sidebar:
         # Log the logout action
         AuditLog.log_action(
             session,
-            user_id=user_id or 1,
+            user_id=user_id,
             action="logout",
             entity_type="user",
-            entity_id=user_id or 1
+            entity_id=user_id
         )
         # Clear session and redirect to login
-        st.session_state.clear()
-        st.switch_page("pages/login.py")
+        logout(st)
 
 # === TITLE ===
 st.title("Business Data Portal")
