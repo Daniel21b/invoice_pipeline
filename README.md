@@ -66,6 +66,10 @@ scoped to the supplied model ARN. S3 is private, versioned and retained on delet
 Duplicate delivery uses deterministic Step Functions execution names; database
 inserts have a unique extraction ID. Reapproving a completed record is a no-op.
 
+## Google sign-in
+
+Upload, analytics, details and extraction review require a verified, unexpired Google identity and an approved email mapped to a distinct database user ID. No shared-password fallback is provided. [Configure and test Google OAuth](docs/GOOGLE_OAUTH_SETUP.md).
+
 ## Implementation map
 
 - `intelligence_app.py`, `invoice_pipeline/intelligence_stack.py`: CDK entry and orchestration.
@@ -88,6 +92,4 @@ inspect the original document. Failed model calls route to review. OCR failures
 fail the execution for inspection/retry rather than creating an accepted row.
 
 No AWS deployment, live provider run, throughput, accuracy or cost result is
-claimed by the local tests. The inherited secrets-based Streamlit admin login
-remains demo authentication. Production operation needs a deployment-specific
-access, networking, observability and retention setup.
+claimed by the local tests. The portal now uses Google OAuth/OIDC sign-in with an explicit reviewer allowlist and per-page guards. Live sign-in requires owner configuration and a verified callback; see [Google sign-in setup](docs/GOOGLE_OAUTH_SETUP.md). Production operation still needs deployment-specific networking, observability and retention settings.
